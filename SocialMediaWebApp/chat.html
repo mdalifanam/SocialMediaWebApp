@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>connectly · chat</title>
+    <!-- Tailwind + Font Awesome + Inter font -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background-color: #0b0e14; }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1a1f2b; }
+        ::-webkit-scrollbar-thumb { background: #2f3e5a; border-radius: 20px; }
+        .card-elegant {
+            background: #131a24;
+            border: 1px solid #253141;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(37, 49, 65, 0.5);
+        }
+        .glass-effect {
+            background: rgba(18, 28, 40, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(45, 85, 255, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #2563eb, #1e3fae);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 40px;
+            transition: all 0.2s;
+            box-shadow: 0 8px 18px -6px #1e3a8a;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(145deg, #2f6ef0, #2549c2);
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px -8px #1e40af;
+        }
+        .avatar-ring {
+            box-shadow: 0 0 0 2px #1f2a3f, 0 0 0 4px #2563eb30;
+        }
+        .mobile-bottom-nav {
+            background: rgba(15, 23, 36, 0.85);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #253b5c;
+        }
+        /* message bubbles */
+        .message-sent {
+            background: #1e3a5f;
+            border: 1px solid #2e4a7a;
+            border-radius: 24px 24px 4px 24px;
+            color: white;
+            padding: 12px 18px;
+            max-width: 75%;
+            align-self: flex-end;
+        }
+        .message-received {
+            background: #1e293b;
+            border: 1px solid #32455f;
+            border-radius: 24px 24px 24px 4px;
+            color: #e2e8f0;
+            padding: 12px 18px;
+            max-width: 75%;
+            align-self: flex-start;
+        }
+        .message-time {
+            font-size: 0.7rem;
+            color: #9aa9c1;
+            margin-top: 4px;
+        }
+        .chat-container {
+            height: calc(100vh - 180px);
+            min-height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+    </style>
+</head>
+<body class="relative antialiased text-gray-200 selection:bg-blue-800 selection:text-white">
+
+<!-- ========== TOP BAR (simplified for chat - no search) ========== -->
+<header class="sticky top-0 z-30 py-3 px-4 md:px-6 glass-effect" style="border-bottom: 1px solid #253b5c;">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <button class="block md:hidden text-blue-400 text-2xl hover:text-blue-300 transition" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent drop-shadow">connectly<span class="text-blue-500">.</span></a>
+        </div>
+        <!-- no search on chat header, just spacer -->
+        <div class="hidden md:block w-full max-w-md mx-6"></div>
+        <div class="flex items-center gap-6 text-gray-200">
+            <a href="messages.html" class="text-blue-400 relative hidden sm:block text-xl transition p-2 -m-2 rounded-full hover:bg-blue-600/10">
+                <i class="fa-regular fa-message"></i>
+            </a>
+            <a href="notifications.html" class="hover:text-blue-400 relative text-xl p-2 -m-2 rounded-full hover:bg-blue-600/10 transition">
+                <i class="fa-regular fa-bell"></i>
+                <span class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg">5</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-2 pl-2 border-l border-blue-800/40">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" class="w-10 h-10 rounded-full object-cover avatar-ring">
+                <span class="hidden sm:inline text-sm font-medium text-white/90">Maya</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- ========== CHAT PAGE CONTENT ========== -->
+<div class="max-w-5xl mx-auto px-4 md:px-6 py-4 relative z-10 h-full flex flex-col">
+    <!-- chat header with back button and user info -->
+    <div class="flex items-center gap-4 mb-4">
+        <a href="messages.html" class="text-blue-400 hover:text-blue-300 text-2xl transition"><i class="fa-regular fa-arrow-left"></i></a>
+        <div class="flex items-center gap-3 flex-1">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full border-2 border-blue-600/50 object-cover">
+            <div>
+                <h2 class="font-bold text-white text-xl">Alex Rivera</h2>
+                <p class="text-xs text-blue-300/60 flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full"></span> Active now</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <button class="text-blue-400 hover:text-blue-300 text-xl p-2"><i class="fa-regular fa-phone"></i></button>
+            <button class="text-blue-400 hover:text-blue-300 text-xl p-2"><i class="fa-regular fa-video"></i></button>
+            <button class="text-blue-400 hover:text-blue-300 text-xl p-2"><i class="fa-regular fa-ellipsis-vertical"></i></button>
+        </div>
+    </div>
+
+    <!-- chat messages container -->
+    <div class="card-elegant rounded-3xl p-5 flex-1 overflow-hidden flex flex-col">
+        <div class="chat-container pr-2" id="chatMessages">
+            <!-- date separator -->
+            <div class="text-center my-2">
+                <span class="text-xs bg-[#1f2a3a] text-blue-300/70 px-3 py-1 rounded-full">Today</span>
+            </div>
+            <!-- received message -->
+            <div class="flex flex-col items-start">
+                <div class="message-received">
+                    Hey! I saw your UI challenge post – looks amazing! 🔥
+                </div>
+                <span class="message-time ml-2">10:24 AM</span>
+            </div>
+            <!-- sent message -->
+            <div class="flex flex-col items-end">
+                <div class="message-sent">
+                    Thanks Alex! Would love to get your feedback on it.
+                </div>
+                <span class="message-time mr-2">10:26 AM</span>
+            </div>
+            <!-- received message -->
+            <div class="flex flex-col items-start">
+                <div class="message-received">
+                    Definitely! I'm working on something similar for my portfolio. Maybe we could collaborate?
+                </div>
+                <span class="message-time ml-2">10:28 AM</span>
+            </div>
+            <!-- sent message (with image) -->
+            <div class="flex flex-col items-end">
+                <div class="message-sent">
+                    That sounds great! Here's a sneak peek of the design system I'm building. <br>
+                    <img src="https://picsum.photos/id/100/200/150" class="rounded-xl mt-2 w-48 border border-blue-500/30">
+                </div>
+                <span class="message-time mr-2">10:31 AM</span>
+            </div>
+            <!-- received message -->
+            <div class="flex flex-col items-start">
+                <div class="message-received">
+                    Wow, love the black & blue palette! Let's sync up later this week.
+                </div>
+                <span class="message-time ml-2">10:33 AM</span>
+            </div>
+            <!-- sent message -->
+            <div class="flex flex-col items-end">
+                <div class="message-sent">
+                    Perfect! How about Thursday afternoon?
+                </div>
+                <span class="message-time mr-2">10:34 AM</span>
+            </div>
+            <!-- received message (typing indicator placeholder) -->
+            <div class="flex items-start gap-2">
+                <div class="bg-[#1e293b] border border-[#32455f] rounded-3xl px-5 py-3 text-blue-300/70">
+                    <i class="fa-regular fa-ellipsis"></i> typing
+                </div>
+            </div>
+        </div>
+
+        <!-- message input area -->
+        <div class="mt-4 pt-4 border-t border-[#253141]">
+            <form class="flex gap-3 items-center">
+                <button type="button" class="text-blue-400 hover:text-blue-300 text-2xl"><i class="fa-regular fa-circle-plus"></i></button>
+                <input type="text" placeholder="Write a message..." class="flex-1 bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 px-6 text-sm text-white placeholder:text-blue-300/30 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-600/20">
+                <button type="button" class="text-blue-400 hover:text-blue-300 text-2xl"><i class="fa-regular fa-face-smile"></i></button>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3.5 w-12 h-12 flex items-center justify-center transition">
+                    <i class="fa-regular fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MOBILE BOTTOM NAV (hidden on chat? but we keep for consistency) ========== -->
+<nav class="fixed bottom-0 left-0 right-0 mobile-bottom-nav py-3 px-6 flex justify-around items-center md:hidden z-40 shadow-2xl">
+    <a href="index.html" class="text-gray-400 hover:text-blue-500 text-3xl transition"><i class="fa-solid fa-house"></i></a>
+    <a href="explore.html" class="text-gray-400 hover:text-blue-500 text-3xl"><i class="fa-regular fa-compass"></i></a>
+    <a href="create-post.html" class="bg-blue-600 text-white rounded-full p-4 -mt-8 shadow-xl text-3xl border border-blue-400"><i class="fa-regular fa-plus"></i></a>
+    <a href="notifications.html" class="text-gray-400 hover:text-blue-500 text-3xl relative">
+        <i class="fa-regular fa-bell"></i>
+        <span class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">5</span>
+    </a>
+    <a href="profile.html" class="text-gray-400 hover:text-blue-500 text-3xl"><i class="fa-regular fa-user"></i></a>
+</nav>
+
+<!-- mobile drawer (identical to previous) -->
+<div id="mobileDrawer" class="fixed inset-0 z-50 hidden" aria-modal="true">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="drawerOverlay"></div>
+    <div class="fixed left-0 top-0 bottom-0 w-80 bg-[#0e1622] border-r border-blue-900/40 p-7 shadow-2xl overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+            <span class="text-3xl font-extrabold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">connectly<span class="text-blue-500">.</span></span>
+            <button id="closeDrawer" class="text-blue-400 text-4xl hover:text-blue-300 transition"><i class="fa-regular fa-xmark"></i></button>
+        </div>
+        <nav class="space-y-3">
+            <a href="index.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-house w-7"></i> Home</a>
+            <a href="explore.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-compass w-7"></i> Explore</a>
+            <a href="trending.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-fire-flame-curved w-7"></i> Trending</a>
+            <a href="friends.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user-group w-7"></i> Friends</a>
+            <a href="messages.html" class="flex items-center gap-5 p-4 bg-blue-600/15 text-blue-400 rounded-2xl text-xl font-semibold border-l-4 border-blue-500 -ml-1 pl-6"><i class="fa-regular fa-message w-7"></i> Messages</a>
+            <a href="saved-posts.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-bookmark w-7"></i> Saved</a>
+            <div class="border-t border-[#26344b] my-4"></div>
+            <a href="profile.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user w-7"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-gear w-7"></i> Settings</a>
+            <a href="create-post.html" class="flex items-center gap-5 p-4 mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-2xl text-xl font-semibold shadow-lg"><i class="fa-regular fa-plus-circle w-7"></i> Create post</a>
+        </nav>
+    </div>
+</div>
+
+<!-- drawer js -->
+<script>
+    (function() {
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const drawer = document.getElementById('mobileDrawer');
+        const closeBtn = document.getElementById('closeDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+
+        function openDrawer() { drawer.classList.remove('hidden'); }
+        function closeDrawer() { drawer.classList.add('hidden'); }
+
+        if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        if (overlay) overlay.addEventListener('click', closeDrawer);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && drawer && !drawer.classList.contains('hidden')) {
+                closeDrawer();
+            }
+        });
+    })();
+</script>
+
+<!-- spacer for mobile bottom nav -->
+<div class="h-20 md:hidden"></div>
+
+<!-- auto-scroll to bottom of chat (simulate latest messages) -->
+<script>
+    (function() {
+        const chat = document.getElementById('chatMessages');
+        if (chat) {
+            chat.scrollTop = chat.scrollHeight;
+        }
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>connectly · refined black & blue</title>
+    <!-- Tailwind + Font Awesome + Inter font (clean & modern) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background-color: #0b0e14; } /* deep black-blue base */
+        /* subtle noise texture (optional) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        /* modern scroll */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1a1f2b; }
+        ::-webkit-scrollbar-thumb { background: #2f3e5a; border-radius: 20px; }
+        /* cards with subtle border glow */
+        .card-elegant {
+            background: #131a24; /* rich dark blue-gray */
+            border: 1px solid #253141;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(37, 49, 65, 0.5);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .card-elegant:hover {
+            box-shadow: 0 20px 35px -12px #0f1a2b, 0 0 0 1px #2e405b;
+        }
+        .glass-effect {
+            background: rgba(18, 28, 40, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(45, 85, 255, 0.15);
+        }
+        .blue-glow {
+            box-shadow: 0 8px 20px -8px #1e3a8a;
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #2563eb, #1e3fae);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 40px;
+            transition: all 0.2s;
+            box-shadow: 0 8px 18px -6px #1e3a8a;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(145deg, #2f6ef0, #2549c2);
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px -8px #1e40af;
+        }
+        .btn-secondary {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #b9c7e0;
+            border-radius: 40px;
+            transition: all 0.15s;
+        }
+        .btn-secondary:hover {
+            background: #263445;
+            border-color: #3b4b64;
+            color: white;
+        }
+        /* profile ring */
+        .avatar-ring {
+            box-shadow: 0 0 0 2px #1f2a3f, 0 0 0 4px #2563eb30;
+        }
+        /* smooth bottom nav */
+        .mobile-bottom-nav {
+            background: rgba(15, 23, 36, 0.85);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #253b5c;
+        }
+    </style>
+</head>
+<body class="relative antialiased text-gray-200 selection:bg-blue-800 selection:text-white">
+
+<!-- ========== TOP BAR – cleaner, softer ========== -->
+<header class="sticky top-0 z-30 py-3 px-4 md:px-6 glass-effect" style="border-bottom: 1px solid #253b5c;">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <!-- left: logo + mobile menu -->
+        <div class="flex items-center gap-3">
+            <button class="block md:hidden text-blue-400 text-2xl hover:text-blue-300 transition" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent drop-shadow">connectly<span class="text-blue-500">.</span></a>
+        </div>
+
+        <!-- desktop search refined -->
+        <div class="hidden md:block w-full max-w-md mx-6">
+            <div class="relative group">
+                <i class="fa-solid fa-magnifying-glass absolute left-5 top-3.5 text-blue-400/50 group-focus-within:text-blue-400 transition text-lg"></i>
+                <input type="text" placeholder="Search people, posts, or hashtags..." 
+                       class="w-full bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 pl-14 pr-6 text-sm text-white placeholder:text-blue-300/30 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-600/20 transition">
+            </div>
+        </div>
+
+        <!-- right icons with improved spacing -->
+        <div class="flex items-center gap-6 text-gray-200">
+            <a href="messages.html" class="hover:text-blue-400 relative hidden sm:block text-xl transition p-2 -m-2 rounded-full hover:bg-blue-600/10">
+                <i class="fa-regular fa-message"></i>
+            </a>
+            <a href="notifications.html" class="hover:text-blue-400 relative text-xl p-2 -m-2 rounded-full hover:bg-blue-600/10 transition">
+                <i class="fa-regular fa-bell"></i>
+                <span class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg">5</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-2 pl-2 border-l border-blue-800/40">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" class="w-10 h-10 rounded-full object-cover avatar-ring">
+                <span class="hidden sm:inline text-sm font-medium text-white/90">Maya</span>
+            </a>
+        </div>
+    </div>
+    <!-- mobile search (small screens) -->
+    <div class="mt-3 md:hidden">
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-5 top-4 text-blue-400/60"></i>
+            <input type="text" placeholder="Search..." class="w-full bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 pl-12 pr-5 text-sm text-white placeholder:text-blue-300/30 focus:ring-2 focus:ring-blue-600/40">
+        </div>
+    </div>
+</header>
+
+<!-- ========== MAIN LAYOUT: refined spacing & cards ========== -->
+<div class="max-w-7xl mx-auto px-4 md:px-6 py-8 flex flex-wrap lg:flex-nowrap gap-8 relative z-10">
+
+    <!-- LEFT SIDEBAR – elegant, less cluttered -->
+    <aside class="w-72 shrink-0 hidden md:block">
+        <div class="sticky top-28 space-y-6">
+            <!-- main navigation elegant card -->
+            <nav class="card-elegant rounded-3xl p-5">
+                <ul class="space-y-1">
+                    <li><a href="index.html" class="flex items-center gap-4 p-4 bg-blue-600/15 text-blue-400 rounded-2xl font-semibold border-l-4 border-blue-500 -ml-1 pl-5"><i class="fa-solid fa-house text-xl w-7"></i> Home</a></li>
+                    <li><a href="explore.html" class="flex items-center gap-4 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl transition-all"><i class="fa-regular fa-compass text-xl w-7"></i> Explore</a></li>
+                    <li><a href="trending.html" class="flex items-center gap-4 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl transition"><i class="fa-solid fa-fire-flame-curved text-xl w-7"></i> Trending</a></li>
+                    <li><a href="friends.html" class="flex items-center gap-4 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl transition"><i class="fa-regular fa-user-group text-xl w-7"></i> Friends</a></li>
+                    <li><a href="messages.html" class="flex items-center gap-4 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl transition"><i class="fa-regular fa-message text-xl w-7"></i> Messages</a></li>
+                    <li><a href="saved-posts.html" class="flex items-center gap-4 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl transition"><i class="fa-regular fa-bookmark text-xl w-7"></i> Saved</a></li>
+                    <li class="pt-3 mt-3 border-t border-[#26344b]"><a href="settings.html" class="flex items-center gap-4 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl transition"><i class="fa-regular fa-gear text-xl w-7"></i> Settings</a></li>
+                    <li><a href="profile.html" class="flex items-center gap-4 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl transition"><i class="fa-regular fa-user text-xl w-7"></i> Profile</a></li>
+                </ul>
+            </nav>
+            <!-- create post button (soft gradient) -->
+            <a href="create-post.html" class="btn-primary flex items-center justify-center gap-3 w-full text-lg py-4">
+                <i class="fa-regular fa-plus-circle text-2xl"></i> Create post
+            </a>
+            <!-- friend requests card – cleaner -->
+            <div class="card-elegant rounded-3xl p-5">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-semibold text-white text-lg">requests</h4>
+                    <a href="friend-requests.html" class="text-sm text-blue-400 hover:underline">3 new</a>
+                </div>
+                <div class="mt-4 space-y-4">
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full border-2 border-blue-600/40">
+                        <div><p class="font-medium text-white">Alex R.</p><p class="text-xs text-blue-300/60">2 mutual</p></div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/women/50.jpg" class="w-12 h-12 rounded-full border-2 border-blue-600/40">
+                        <div><p class="font-medium text-white">Jenna K.</p><p class="text-xs text-blue-300/60">4 mutual</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN FEED – spacious, elegant cards -->
+    <main class="flex-1 min-w-0 max-w-2xl lg:max-w-3xl mx-auto w-full space-y-7">
+
+        <!-- create post card – refined -->
+        <div class="card-elegant rounded-3xl p-6">
+            <div class="flex gap-4 items-center">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-14 h-14 rounded-full border-2 border-blue-600/50 object-cover" alt="you">
+                <a href="create-post.html" class="flex-1 bg-[#1f2c3e] hover:bg-[#26374f] rounded-full py-4 px-6 text-base text-blue-200/70 transition border border-[#364d6b]">What's new, Maya? <span class="text-blue-400 ml-2">✨</span></a>
+                <button class="text-blue-500 text-2xl hover:bg-blue-600/20 p-3 rounded-2xl transition"><i class="fa-regular fa-image"></i></button>
+            </div>
+        </div>
+
+        <!-- POST 1 – refined card with smooth hover -->
+        <article class="card-elegant rounded-3xl p-7 transition-all hover:border-blue-700/50">
+            <div class="flex items-start gap-4">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-14 h-14 rounded-full border-2 border-blue-600/50">
+                <div class="flex-1">
+                    <div class="flex items-center flex-wrap gap-2">
+                        <h3 class="font-bold text-white text-xl">Alex Rivera</h3>
+                        <span class="text-blue-400/60 text-sm">• 2h ago</span>
+                    </div>
+                    <p class="text-gray-300 text-[1rem] leading-relaxed mt-2">Just finished a UI challenge for Connectly! 🎨 What do you think about the new black & blue direction? #ui #socialapp</p>
+                </div>
+                <button class="text-blue-400/50 hover:text-blue-300 text-2xl p-2 -m-2 rounded-full hover:bg-blue-600/10"><i class="fa-regular fa-ellipsis"></i></button>
+            </div>
+            <!-- image with soft radius -->
+            <div class="mt-5 rounded-2xl overflow-hidden bg-[#1f2b3b] h-72 flex items-center justify-center border border-blue-800/30">
+                <img src="https://picsum.photos/id/100/700/350" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition" alt="post">
+            </div>
+            <div class="flex items-center justify-between mt-6 text-gray-300 text-base">
+                <div class="flex gap-8">
+                    <button class="flex items-center gap-3 hover:text-blue-400 transition"><i class="fa-regular fa-heart text-2xl"></i> 2.1k</button>
+                    <button class="flex items-center gap-3 hover:text-blue-400 transition"><i class="fa-regular fa-comment text-2xl"></i> 184</button>
+                </div>
+                <button class="flex items-center gap-3 hover:text-blue-400 transition"><i class="fa-regular fa-share-from-square text-2xl"></i></button>
+            </div>
+        </article>
+
+        <!-- POST 2 – refined -->
+        <article class="card-elegant rounded-3xl p-7">
+            <div class="flex items-start gap-4">
+                <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-14 h-14 rounded-full border-2 border-blue-600/50">
+                <div class="flex-1">
+                    <div class="flex items-center flex-wrap gap-2">
+                        <h3 class="font-bold text-white text-xl">Priya Kapoor</h3>
+                        <span class="text-blue-400/60 text-sm">• yesterday</span>
+                    </div>
+                    <p class="text-gray-300 text-[1rem] mt-2">Exploring the new trending page – love how fast the hashtags update! 🔥 #connectly #trending</p>
+                </div>
+                <button class="text-blue-400/50 hover:text-blue-300 text-2xl p-2 -m-2 rounded-full hover:bg-blue-600/10"><i class="fa-regular fa-ellipsis"></i></button>
+            </div>
+            <!-- quote block with glass -->
+            <div class="mt-5 p-6 bg-[#1a263a] rounded-2xl italic text-blue-200 border-l-8 border-blue-600/70 text-base shadow-inner">
+                "Finally a place where devs and creators connect."
+            </div>
+            <div class="flex items-center justify-between mt-6 text-gray-300 text-base">
+                <div class="flex gap-8">
+                    <button class="flex items-center gap-3 hover:text-blue-400"><i class="fa-regular fa-heart text-2xl"></i> 892</button>
+                    <button class="flex items-center gap-3 hover:text-blue-400"><i class="fa-regular fa-comment text-2xl"></i> 47</button>
+                </div>
+                <button class="flex items-center gap-3 hover:text-blue-400"><i class="fa-regular fa-share-from-square text-2xl"></i></button>
+            </div>
+        </article>
+
+        <!-- POST 3 -->
+        <article class="card-elegant rounded-3xl p-7">
+            <div class="flex items-start gap-4">
+                <img src="https://randomuser.me/api/portraits/men/75.jpg" class="w-14 h-14 rounded-full border-2 border-blue-600/50">
+                <div class="flex-1">
+                    <div class="flex items-center flex-wrap gap-2">
+                        <h3 class="font-bold text-white text-xl">Marcus Chen</h3>
+                        <span class="text-blue-400/60 text-sm">• 3h ago</span>
+                    </div>
+                    <p class="text-gray-300 text-[1rem] mt-2">Morning devs ☀️ Just pushed a new feature for friend requests. Can't wait to hear your feedback!</p>
+                </div>
+                <button class="text-blue-400/50 hover:text-blue-300 text-2xl p-2 -m-2 rounded-full hover:bg-blue-600/10"><i class="fa-regular fa-ellipsis"></i></button>
+            </div>
+            <div class="mt-5 rounded-2xl bg-gradient-to-br from-blue-900 via-[#0b1a2e] to-black h-56 flex items-center justify-center border border-blue-800/30">
+                <i class="fa-regular fa-code text-7xl text-blue-500/40"></i>
+            </div>
+            <div class="flex items-center justify-between mt-6 text-gray-300 text-base">
+                <div class="flex gap-8">
+                    <button class="flex items-center gap-3 hover:text-blue-400"><i class="fa-regular fa-heart text-2xl"></i> 1.3k</button>
+                    <button class="flex items-center gap-3 hover:text-blue-400"><i class="fa-regular fa-comment text-2xl"></i> 94</button>
+                </div>
+                <button class="flex items-center gap-3 hover:text-blue-400"><i class="fa-regular fa-share-from-square text-2xl"></i></button>
+            </div>
+        </article>
+
+        <!-- load more refined -->
+        <div class="text-center py-4">
+            <button class="btn-secondary px-8 py-4 text-base font-medium inline-flex items-center gap-2"><i class="fa-regular fa-rotate-right"></i> Load more posts</button>
+        </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR – minimal, airy -->
+    <aside class="w-80 hidden lg:block shrink-0">
+        <div class="sticky top-28 space-y-6">
+            <!-- suggestion card -->
+            <div class="card-elegant rounded-3xl p-6">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-semibold text-white text-lg">suggested</h4>
+                    <a href="suggested-users.html" class="text-sm text-blue-400 hover:underline">all</a>
+                </div>
+                <div class="mt-5 space-y-5">
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/men/42.jpg" class="w-14 h-14 rounded-full border-2 border-blue-600/50">
+                        <div class="flex-1">
+                            <p class="font-semibold text-white">Ethan W.</p>
+                            <span class="text-xs text-blue-300/60">Graphic designer</span>
+                        </div>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-xs font-medium shadow">Follow</button>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <img src="https://randomuser.me/api/portraits/women/33.jpg" class="w-14 h-14 rounded-full border-2 border-blue-600/50">
+                        <div class="flex-1">
+                            <p class="font-semibold text-white">Sophia L.</p>
+                            <span class="text-xs text-blue-300/60">Product lead</span>
+                        </div>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-xs font-medium">Follow</button>
+                    </div>
+                </div>
+                <!-- trending with softer typography -->
+                <div class="mt-7 pt-5 border-t border-[#26344b]">
+                    <h4 class="font-semibold text-white text-lg mb-4">📈 trending</h4>
+                    <div class="space-y-3">
+                        <a href="hashtags.html" class="block text-blue-400 hover:text-blue-300 font-medium transition">#connectlyLaunch</a>
+                        <a href="hashtags.html" class="block text-blue-400 hover:text-blue-300 font-medium">#uiDesign</a>
+                        <a href="hashtags.html" class="block text-blue-400 hover:text-blue-300 font-medium">#blackandblue</a>
+                        <a href="hashtags.html" class="block text-blue-400 hover:text-blue-300 font-medium">#socialapp</a>
+                    </div>
+                </div>
+                <!-- footer minimal -->
+                <div class="mt-7 text-xs text-blue-300/40 flex flex-wrap gap-3">
+                    <a href="privacy.html" class="hover:text-blue-300">Privacy</a> <span>•</span>
+                    <a href="security.html" class="hover:text-blue-300">Security</a> <span>•</span>
+                    <a href="#" class="hover:text-blue-300">Terms</a>
+                    <p class="w-full mt-2">© 2025 connectly</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- mobile bottom nav – clean blur -->
+    <nav class="fixed bottom-0 left-0 right-0 mobile-bottom-nav py-3 px-6 flex justify-around items-center md:hidden z-40 shadow-2xl">
+        <a href="index.html" class="text-blue-500 text-3xl"><i class="fa-solid fa-house"></i></a>
+        <a href="explore.html" class="text-gray-400 hover:text-blue-500 text-3xl transition"><i class="fa-regular fa-compass"></i></a>
+        <a href="create-post.html" class="bg-blue-600 text-white rounded-full p-4 -mt-8 shadow-xl text-3xl border border-blue-400"><i class="fa-regular fa-plus"></i></a>
+        <a href="notifications.html" class="text-gray-400 hover:text-blue-500 text-3xl relative">
+            <i class="fa-regular fa-bell"></i>
+            <span class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">5</span>
+        </a>
+        <a href="profile.html" class="text-gray-400 hover:text-blue-500 text-3xl"><i class="fa-regular fa-user"></i></a>
+    </nav>
+</div>
+
+<!-- mobile drawer – refined -->
+<div id="mobileDrawer" class="fixed inset-0 z-50 hidden" aria-modal="true">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="drawerOverlay"></div>
+    <div class="fixed left-0 top-0 bottom-0 w-80 bg-[#0e1622] border-r border-blue-900/40 p-7 shadow-2xl overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+            <span class="text-3xl font-extrabold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">connectly<span class="text-blue-500">.</span></span>
+            <button id="closeDrawer" class="text-blue-400 text-4xl hover:text-blue-300 transition"><i class="fa-regular fa-xmark"></i></button>
+        </div>
+        <nav class="space-y-3">
+            <a href="index.html" class="flex items-center gap-5 p-4 bg-blue-600/15 text-blue-400 rounded-2xl text-xl font-semibold border-l-4 border-blue-500 -ml-1 pl-6"><i class="fa-solid fa-house w-7"></i> Home</a>
+            <a href="explore.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-compass w-7"></i> Explore</a>
+            <a href="trending.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-fire-flame-curved w-7"></i> Trending</a>
+            <a href="friends.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user-group w-7"></i> Friends</a>
+            <a href="messages.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-message w-7"></i> Messages</a>
+            <a href="saved-posts.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-bookmark w-7"></i> Saved</a>
+            <div class="border-t border-[#26344b] my-4"></div>
+            <a href="profile.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user w-7"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-gear w-7"></i> Settings</a>
+            <a href="create-post.html" class="flex items-center gap-5 p-4 mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-2xl text-xl font-semibold shadow-lg"><i class="fa-regular fa-plus-circle w-7"></i> Create post</a>
+        </nav>
+    </div>
+</div>
+
+<!-- drawer js -->
+<script>
+    (function() {
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const drawer = document.getElementById('mobileDrawer');
+        const closeBtn = document.getElementById('closeDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+
+        function openDrawer() { drawer.classList.remove('hidden'); }
+        function closeDrawer() { drawer.classList.add('hidden'); }
+
+        if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        if (overlay) overlay.addEventListener('click', closeDrawer);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && drawer && !drawer.classList.contains('hidden')) {
+                closeDrawer();
+            }
+        });
+    })();
+</script>
+
+<!-- spacer for mobile bottom nav -->
+<div class="h-20 md:hidden"></div>
+</body>
+</html>

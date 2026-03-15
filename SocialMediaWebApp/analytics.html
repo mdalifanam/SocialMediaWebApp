@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>connectly · analytics</title>
+    <!-- Tailwind + Font Awesome + Inter font -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background-color: #0b0e14; }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1a1f2b; }
+        ::-webkit-scrollbar-thumb { background: #2f3e5a; border-radius: 20px; }
+        .card-elegant {
+            background: #131a24;
+            border: 1px solid #253141;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(37, 49, 65, 0.5);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .glass-effect {
+            background: rgba(18, 28, 40, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(45, 85, 255, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #2563eb, #1e3fae);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 40px;
+            transition: all 0.2s;
+            box-shadow: 0 8px 18px -6px #1e3a8a;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(145deg, #2f6ef0, #2549c2);
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px -8px #1e40af;
+        }
+        .btn-secondary {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #b9c7e0;
+            border-radius: 40px;
+            transition: all 0.15s;
+        }
+        .btn-secondary:hover {
+            background: #263445;
+            border-color: #3b4b64;
+            color: white;
+        }
+        .avatar-ring {
+            box-shadow: 0 0 0 2px #1f2a3f, 0 0 0 4px #2563eb30;
+        }
+        .mobile-bottom-nav {
+            background: rgba(15, 23, 36, 0.85);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #253b5c;
+        }
+        .stat-card {
+            transition: all 0.15s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: #2e4a7a;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #1e293b;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="relative antialiased text-gray-200 selection:bg-blue-800 selection:text-white">
+
+<!-- ========== TOP BAR (identical) ========== -->
+<header class="sticky top-0 z-30 py-3 px-4 md:px-6 glass-effect" style="border-bottom: 1px solid #253b5c;">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <button class="block md:hidden text-blue-400 text-2xl hover:text-blue-300 transition" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent drop-shadow">connectly<span class="text-blue-500">.</span></a>
+        </div>
+        <div class="hidden md:block w-full max-w-md mx-6">
+            <div class="relative group">
+                <i class="fa-solid fa-magnifying-glass absolute left-5 top-3.5 text-blue-400/50 group-focus-within:text-blue-400 transition text-lg"></i>
+                <input type="text" placeholder="Search people, posts, or hashtags..." 
+                       class="w-full bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 pl-14 pr-6 text-sm text-white placeholder:text-blue-300/30 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-600/20 transition">
+            </div>
+        </div>
+        <div class="flex items-center gap-6 text-gray-200">
+            <a href="messages.html" class="hover:text-blue-400 relative hidden sm:block text-xl transition p-2 -m-2 rounded-full hover:bg-blue-600/10">
+                <i class="fa-regular fa-message"></i>
+            </a>
+            <a href="notifications.html" class="hover:text-blue-400 relative text-xl p-2 -m-2 rounded-full hover:bg-blue-600/10 transition">
+                <i class="fa-regular fa-bell"></i>
+                <span class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg">5</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-2 pl-2 border-l border-blue-800/40">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" class="w-10 h-10 rounded-full object-cover avatar-ring">
+                <span class="hidden sm:inline text-sm font-medium text-white/90">Maya</span>
+            </a>
+        </div>
+    </div>
+    <div class="mt-3 md:hidden">
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-5 top-4 text-blue-400/60"></i>
+            <input type="text" placeholder="Search..." class="w-full bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 pl-12 pr-5 text-sm text-white placeholder:text-blue-300/30 focus:ring-2 focus:ring-blue-600/40">
+        </div>
+    </div>
+</header>
+
+<!-- ========== ANALYTICS PAGE CONTENT ========== -->
+<div class="max-w-7xl mx-auto px-4 md:px-6 py-8 relative z-10">
+    <!-- header with date range selector -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h1 class="text-3xl font-bold text-white flex items-center gap-3"><i class="fa-regular fa-chart-simple text-blue-500"></i> Analytics</h1>
+        <div class="flex gap-2">
+            <select class="bg-[#1e293b] border border-[#32455f] rounded-full py-2 px-4 text-sm text-white focus:outline-none focus:border-blue-500">
+                <option>Last 7 days</option>
+                <option selected>Last 30 days</option>
+                <option>Last 90 days</option>
+                <option>This year</option>
+            </select>
+            <button class="btn-secondary py-2 px-4 text-sm flex items-center gap-2"><i class="fa-regular fa-download"></i> Export</button>
+        </div>
+    </div>
+
+    <!-- key metrics cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div class="card-elegant rounded-3xl p-5 stat-card">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-blue-300/70 text-sm">Profile views</span>
+                <div class="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400">
+                    <i class="fa-regular fa-eye"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-white">2,847</p>
+            <p class="text-xs text-green-400 mt-2"><i class="fa-regular fa-arrow-up mr-1"></i> +12.3% from last period</p>
+        </div>
+        <div class="card-elegant rounded-3xl p-5 stat-card">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-blue-300/70 text-sm">Total followers</span>
+                <div class="w-10 h-10 rounded-full bg-green-600/20 flex items-center justify-center text-green-400">
+                    <i class="fa-regular fa-user-group"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-white">12.4k</p>
+            <p class="text-xs text-green-400 mt-2"><i class="fa-regular fa-arrow-up mr-1"></i> +243 new</p>
+        </div>
+        <div class="card-elegant rounded-3xl p-5 stat-card">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-blue-300/70 text-sm">Post reach</span>
+                <div class="w-10 h-10 rounded-full bg-purple-600/20 flex items-center justify-center text-purple-400">
+                    <i class="fa-regular fa-rocket"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-white">45.2k</p>
+            <p class="text-xs text-green-400 mt-2"><i class="fa-regular fa-arrow-up mr-1"></i> +5.7%</p>
+        </div>
+        <div class="card-elegant rounded-3xl p-5 stat-card">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-blue-300/70 text-sm">Engagement rate</span>
+                <div class="w-10 h-10 rounded-full bg-orange-600/20 flex items-center justify-center text-orange-400">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-white">3.8%</p>
+            <p class="text-xs text-yellow-400 mt-2"><i class="fa-regular fa-minus mr-1"></i> -0.2% from last period</p>
+        </div>
+    </div>
+
+    <!-- charts row (placeholders) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- follower growth chart placeholder -->
+        <div class="card-elegant rounded-3xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Follower growth</h3>
+            <div class="h-40 flex items-end justify-between gap-2">
+                <div class="w-full flex flex-col items-center">
+                    <div class="w-full bg-[#1e293b] h-32 rounded-t-lg relative" style="height: 120px;">
+                        <div class="absolute bottom-0 w-full bg-blue-500 rounded-t-lg" style="height: 65%;"></div>
+                    </div>
+                    <span class="text-xs text-blue-300/60 mt-2">Mon</span>
+                </div>
+                <div class="w-full flex flex-col items-center">
+                    <div class="w-full bg-[#1e293b] h-32 rounded-t-lg relative">
+                        <div class="absolute bottom-0 w-full bg-blue-500 rounded-t-lg" style="height: 45%;"></div>
+                    </div>
+                    <span class="text-xs text-blue-300/60 mt-2">Tue</span>
+                </div>
+                <div class="w-full flex flex-col items-center">
+                    <div class="w-full bg-[#1e293b] h-32 rounded-t-lg relative">
+                        <div class="absolute bottom-0 w-full bg-blue-500 rounded-t-lg" style="height: 80%;"></div>
+                    </div>
+                    <span class="text-xs text-blue-300/60 mt-2">Wed</span>
+                </div>
+                <div class="w-full flex flex-col items-center">
+                    <div class="w-full bg-[#1e293b] h-32 rounded-t-lg relative">
+                        <div class="absolute bottom-0 w-full bg-blue-500 rounded-t-lg" style="height: 55%;"></div>
+                    </div>
+                    <span class="text-xs text-blue-300/60 mt-2">Thu</span>
+                </div>
+                <div class="w-full flex flex-col items-center">
+                    <div class="w-full bg-[#1e293b] h-32 rounded-t-lg relative">
+                        <div class="absolute bottom-0 w-full bg-blue-500 rounded-t-lg" style="height: 70%;"></div>
+                    </div>
+                    <span class="text-xs text-blue-300/60 mt-2">Fri</span>
+                </div>
+                <div class="w-full flex flex-col items-center">
+                    <div class="w-full bg-[#1e293b] h-32 rounded-t-lg relative">
+                        <div class="absolute bottom-0 w-full bg-blue-500 rounded-t-lg" style="height: 90%;"></div>
+                    </div>
+                    <span class="text-xs text-blue-300/60 mt-2">Sat</span>
+                </div>
+                <div class="w-full flex flex-col items-center">
+                    <div class="w-full bg-[#1e293b] h-32 rounded-t-lg relative">
+                        <div class="absolute bottom-0 w-full bg-blue-500 rounded-t-lg" style="height: 60%;"></div>
+                    </div>
+                    <span class="text-xs text-blue-300/60 mt-2">Sun</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- engagement breakdown -->
+        <div class="card-elegant rounded-3xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Engagement breakdown</h3>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-300/70">Likes</span>
+                        <span class="text-white font-medium">12.4k</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-300/70">Comments</span>
+                        <span class="text-white font-medium">3.2k</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-300/70">Shares</span>
+                        <span class="text-white font-medium">2.1k</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-300/70">Saves</span>
+                        <span class="text-white font-medium">1.8k</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 25%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- top posts table -->
+    <div class="card-elegant rounded-3xl p-6">
+        <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-semibold text-white">Top performing posts</h3>
+            <a href="#" class="text-sm text-blue-400 hover:underline">View all</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left text-blue-300/60 border-b border-[#253141]">
+                        <th class="pb-3 font-medium">Post</th>
+                        <th class="pb-3 font-medium">Reach</th>
+                        <th class="pb-3 font-medium">Engagement</th>
+                        <th class="pb-3 font-medium">Likes</th>
+                        <th class="pb-3 font-medium">Comments</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#253141]">
+                    <tr class="hover:bg-[#1e2a3a] transition">
+                        <td class="py-4">
+                            <div class="flex items-center gap-3">
+                                <img src="https://picsum.photos/id/100/50/50" class="w-10 h-10 rounded-lg object-cover">
+                                <span class="text-white">UI challenge sneak peek</span>
+                            </div>
+                        </td>
+                        <td class="text-blue-300">12.4k</td>
+                        <td class="text-blue-300">3.2k</td>
+                        <td class="text-blue-300">2.1k</td>
+                        <td class="text-blue-300">184</td>
+                    </tr>
+                    <tr class="hover:bg-[#1e2a3a] transition">
+                        <td class="py-4">
+                            <div class="flex items-center gap-3">
+                                <img src="https://picsum.photos/id/1015/50/50" class="w-10 h-10 rounded-lg object-cover">
+                                <span class="text-white">Morning light in mountains</span>
+                            </div>
+                        </td>
+                        <td class="text-blue-300">8.7k</td>
+                        <td class="text-blue-300">2.4k</td>
+                        <td class="text-blue-300">1.8k</td>
+                        <td class="text-blue-300">97</td>
+                    </tr>
+                    <tr class="hover:bg-[#1e2a3a] transition">
+                        <td class="py-4">
+                            <div class="flex items-center gap-3">
+                                <img src="https://picsum.photos/id/1043/50/50" class="w-10 h-10 rounded-lg object-cover">
+                                <span class="text-white">Dark mode UI kit</span>
+                            </div>
+                        </td>
+                        <td class="text-blue-300">6.2k</td>
+                        <td class="text-blue-300">1.9k</td>
+                        <td class="text-blue-300">1.2k</td>
+                        <td class="text-blue-300">64</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- audience insights -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        <div class="card-elegant rounded-3xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Audience demographics</h3>
+            <div class="space-y-3">
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-300/70">18-24</span>
+                        <span class="text-white">24%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 24%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-300/70">25-34</span>
+                        <span class="text-white">42%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 42%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-300/70">35-44</span>
+                        <span class="text-white">22%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 22%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-blue-300/70">45+</span>
+                        <span class="text-white">12%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 12%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-elegant rounded-3xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Top locations</h3>
+            <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-16 text-sm text-blue-300/70">United States</span>
+                    <div class="flex-1 progress-bar">
+                        <div class="progress-fill" style="width: 68%"></div>
+                    </div>
+                    <span class="text-sm text-white">68%</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-16 text-sm text-blue-300/70">UK</span>
+                    <div class="flex-1 progress-bar">
+                        <div class="progress-fill" style="width: 22%"></div>
+                    </div>
+                    <span class="text-sm text-white">22%</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-16 text-sm text-blue-300/70">Canada</span>
+                    <div class="flex-1 progress-bar">
+                        <div class="progress-fill" style="width: 10%"></div>
+                    </div>
+                    <span class="text-sm text-white">10%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MOBILE BOTTOM NAV ========== -->
+<nav class="fixed bottom-0 left-0 right-0 mobile-bottom-nav py-3 px-6 flex justify-around items-center md:hidden z-40 shadow-2xl">
+    <a href="index.html" class="text-gray-400 hover:text-blue-500 text-3xl transition"><i class="fa-solid fa-house"></i></a>
+    <a href="explore.html" class="text-gray-400 hover:text-blue-500 text-3xl"><i class="fa-regular fa-compass"></i></a>
+    <a href="create-post.html" class="bg-blue-600 text-white rounded-full p-4 -mt-8 shadow-xl text-3xl border border-blue-400"><i class="fa-regular fa-plus"></i></a>
+    <a href="notifications.html" class="text-gray-400 hover:text-blue-500 text-3xl relative">
+        <i class="fa-regular fa-bell"></i>
+        <span class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">5</span>
+    </a>
+    <a href="profile.html" class="text-gray-400 hover:text-blue-500 text-3xl"><i class="fa-regular fa-user"></i></a>
+</nav>
+
+<!-- mobile drawer (identical) -->
+<div id="mobileDrawer" class="fixed inset-0 z-50 hidden" aria-modal="true">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="drawerOverlay"></div>
+    <div class="fixed left-0 top-0 bottom-0 w-80 bg-[#0e1622] border-r border-blue-900/40 p-7 shadow-2xl overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+            <span class="text-3xl font-extrabold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">connectly<span class="text-blue-500">.</span></span>
+            <button id="closeDrawer" class="text-blue-400 text-4xl hover:text-blue-300 transition"><i class="fa-regular fa-xmark"></i></button>
+        </div>
+        <nav class="space-y-3">
+            <a href="index.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-house w-7"></i> Home</a>
+            <a href="explore.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-compass w-7"></i> Explore</a>
+            <a href="trending.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-fire-flame-curved w-7"></i> Trending</a>
+            <a href="friends.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user-group w-7"></i> Friends</a>
+            <a href="messages.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-message w-7"></i> Messages</a>
+            <a href="saved-posts.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-bookmark w-7"></i> Saved</a>
+            <div class="border-t border-[#26344b] my-4"></div>
+            <a href="profile.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user w-7"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-gear w-7"></i> Settings</a>
+            <a href="create-post.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-plus-circle w-7"></i> Create post</a>
+        </nav>
+    </div>
+</div>
+
+<!-- drawer js -->
+<script>
+    (function() {
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const drawer = document.getElementById('mobileDrawer');
+        const closeBtn = document.getElementById('closeDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+
+        function openDrawer() { drawer.classList.remove('hidden'); }
+        function closeDrawer() { drawer.classList.add('hidden'); }
+
+        if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        if (overlay) overlay.addEventListener('click', closeDrawer);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && drawer && !drawer.classList.contains('hidden')) {
+                closeDrawer();
+            }
+        });
+    })();
+</script>
+
+<!-- spacer for mobile bottom nav -->
+<div class="h-20 md:hidden"></div>
+</body>
+</html>

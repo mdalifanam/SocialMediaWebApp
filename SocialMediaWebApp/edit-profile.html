@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>connectly · edit profile</title>
+    <!-- Tailwind + Font Awesome + Inter font (consistent) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background-color: #0b0e14; }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1a1f2b; }
+        ::-webkit-scrollbar-thumb { background: #2f3e5a; border-radius: 20px; }
+        .card-elegant {
+            background: #131a24;
+            border: 1px solid #253141;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(37, 49, 65, 0.5);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .glass-effect {
+            background: rgba(18, 28, 40, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(45, 85, 255, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #2563eb, #1e3fae);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 40px;
+            transition: all 0.2s;
+            box-shadow: 0 8px 18px -6px #1e3a8a;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(145deg, #2f6ef0, #2549c2);
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px -8px #1e40af;
+        }
+        .btn-secondary {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #b9c7e0;
+            border-radius: 40px;
+            transition: all 0.15s;
+        }
+        .btn-secondary:hover {
+            background: #263445;
+            border-color: #3b4b64;
+            color: white;
+        }
+        .avatar-ring {
+            box-shadow: 0 0 0 2px #1f2a3f, 0 0 0 4px #2563eb30;
+        }
+        .mobile-bottom-nav {
+            background: rgba(15, 23, 36, 0.85);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #253b5c;
+        }
+        /* form input styles */
+        .input-field {
+            background: #1e293b;
+            border: 1px solid #32455f;
+            border-radius: 16px;
+            padding: 0.75rem 1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.15s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #b9c7e0;
+        }
+    </style>
+</head>
+<body class="relative antialiased text-gray-200 selection:bg-blue-800 selection:text-white">
+
+<!-- ========== TOP BAR (identical to previous pages) ========== -->
+<header class="sticky top-0 z-30 py-3 px-4 md:px-6 glass-effect" style="border-bottom: 1px solid #253b5c;">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <button class="block md:hidden text-blue-400 text-2xl hover:text-blue-300 transition" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent drop-shadow">connectly<span class="text-blue-500">.</span></a>
+        </div>
+        <div class="hidden md:block w-full max-w-md mx-6">
+            <div class="relative group">
+                <i class="fa-solid fa-magnifying-glass absolute left-5 top-3.5 text-blue-400/50 group-focus-within:text-blue-400 transition text-lg"></i>
+                <input type="text" placeholder="Search people, posts, or hashtags..." 
+                       class="w-full bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 pl-14 pr-6 text-sm text-white placeholder:text-blue-300/30 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-600/20 transition">
+            </div>
+        </div>
+        <div class="flex items-center gap-6 text-gray-200">
+            <a href="messages.html" class="hover:text-blue-400 relative hidden sm:block text-xl transition p-2 -m-2 rounded-full hover:bg-blue-600/10">
+                <i class="fa-regular fa-message"></i>
+            </a>
+            <a href="notifications.html" class="hover:text-blue-400 relative text-xl p-2 -m-2 rounded-full hover:bg-blue-600/10 transition">
+                <i class="fa-regular fa-bell"></i>
+                <span class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg">5</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-2 pl-2 border-l border-blue-800/40">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" class="w-10 h-10 rounded-full object-cover avatar-ring">
+                <span class="hidden sm:inline text-sm font-medium text-white/90">Maya</span>
+            </a>
+        </div>
+    </div>
+    <div class="mt-3 md:hidden">
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-5 top-4 text-blue-400/60"></i>
+            <input type="text" placeholder="Search..." class="w-full bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 pl-12 pr-5 text-sm text-white placeholder:text-blue-300/30 focus:ring-2 focus:ring-blue-600/40">
+        </div>
+    </div>
+</header>
+
+<!-- ========== EDIT PROFILE CONTENT ========== -->
+<div class="max-w-3xl mx-auto px-4 md:px-6 py-8 relative z-10">
+    <!-- header with back link -->
+    <div class="flex items-center gap-4 mb-6">
+        <a href="profile.html" class="text-blue-400 hover:text-blue-300 text-2xl transition"><i class="fa-regular fa-arrow-left"></i></a>
+        <h1 class="text-3xl font-bold text-white">Edit profile</h1>
+    </div>
+
+    <!-- main form card -->
+    <div class="card-elegant rounded-3xl p-6 md:p-8">
+        <!-- avatar and cover preview (optional) -->
+        <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-start mb-8">
+            <div class="text-center">
+                <div class="relative inline-block">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" class="w-28 h-28 rounded-full border-4 border-[#131a24] avatar-ring object-cover">
+                    <button class="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 border-2 border-[#131a24]">
+                        <i class="fa-regular fa-camera text-sm"></i>
+                    </button>
+                </div>
+                <p class="text-sm text-blue-300/70 mt-2">Change avatar</p>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm text-blue-300/70 mb-2">Cover image</p>
+                <div class="relative h-24 rounded-xl overflow-hidden border border-[#32455f]">
+                    <img src="https://picsum.photos/id/1015/600/150" class="w-full h-full object-cover">
+                    <button class="absolute top-2 right-2 bg-[#1e293b] hover:bg-[#263445] text-blue-300 rounded-full p-2 border border-[#32455f]">
+                        <i class="fa-regular fa-pen text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- form fields -->
+        <form>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="input-label">First name</label>
+                    <input type="text" class="input-field" value="Maya">
+                </div>
+                <div>
+                    <label class="input-label">Last name</label>
+                    <input type="text" class="input-field" value="Rodriguez">
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="input-label">Display name</label>
+                <input type="text" class="input-field" value="Maya Rodriguez">
+            </div>
+
+            <div class="mb-6">
+                <label class="input-label">Bio</label>
+                <textarea rows="4" class="input-field resize-none">Designer & developer passionate about creating beautiful, functional experiences. Sharing my journey and tips on UI/UX, frontend, and creativity. ✨</textarea>
+                <p class="text-xs text-blue-300/40 mt-1">Maximum 160 characters</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="input-label">Location</label>
+                    <input type="text" class="input-field" value="San Francisco, CA">
+                </div>
+                <div>
+                    <label class="input-label">Website</label>
+                    <input type="url" class="input-field" value="https://maya.design">
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <label class="input-label">Email</label>
+                <input type="email" class="input-field" value="maya@connectly.app">
+            </div>
+
+            <!-- action buttons -->
+            <div class="flex flex-wrap gap-4 justify-end">
+                <a href="profile.html" class="btn-secondary py-3 px-8 text-base">Cancel</a>
+                <button type="submit" class="btn-primary py-3 px-8 text-base">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========== MOBILE BOTTOM NAV (same as index) ========== -->
+<nav class="fixed bottom-0 left-0 right-0 mobile-bottom-nav py-3 px-6 flex justify-around items-center md:hidden z-40 shadow-2xl">
+    <a href="index.html" class="text-gray-400 hover:text-blue-500 text-3xl transition"><i class="fa-solid fa-house"></i></a>
+    <a href="explore.html" class="text-gray-400 hover:text-blue-500 text-3xl"><i class="fa-regular fa-compass"></i></a>
+    <a href="create-post.html" class="bg-blue-600 text-white rounded-full p-4 -mt-8 shadow-xl text-3xl border border-blue-400"><i class="fa-regular fa-plus"></i></a>
+    <a href="notifications.html" class="text-gray-400 hover:text-blue-500 text-3xl relative">
+        <i class="fa-regular fa-bell"></i>
+        <span class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">5</span>
+    </a>
+    <a href="profile.html" class="text-blue-500 text-3xl"><i class="fa-regular fa-user"></i></a>
+</nav>
+
+<!-- mobile drawer (identical to previous) -->
+<div id="mobileDrawer" class="fixed inset-0 z-50 hidden" aria-modal="true">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="drawerOverlay"></div>
+    <div class="fixed left-0 top-0 bottom-0 w-80 bg-[#0e1622] border-r border-blue-900/40 p-7 shadow-2xl overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+            <span class="text-3xl font-extrabold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">connectly<span class="text-blue-500">.</span></span>
+            <button id="closeDrawer" class="text-blue-400 text-4xl hover:text-blue-300 transition"><i class="fa-regular fa-xmark"></i></button>
+        </div>
+        <nav class="space-y-3">
+            <a href="index.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-house w-7"></i> Home</a>
+            <a href="explore.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-compass w-7"></i> Explore</a>
+            <a href="trending.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-fire-flame-curved w-7"></i> Trending</a>
+            <a href="friends.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user-group w-7"></i> Friends</a>
+            <a href="messages.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-message w-7"></i> Messages</a>
+            <a href="saved-posts.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-bookmark w-7"></i> Saved</a>
+            <div class="border-t border-[#26344b] my-4"></div>
+            <a href="profile.html" class="flex items-center gap-5 p-4 bg-blue-600/15 text-blue-400 rounded-2xl text-xl font-semibold border-l-4 border-blue-500 -ml-1 pl-6"><i class="fa-regular fa-user w-7"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-gear w-7"></i> Settings</a>
+            <a href="create-post.html" class="flex items-center gap-5 p-4 mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-2xl text-xl font-semibold shadow-lg"><i class="fa-regular fa-plus-circle w-7"></i> Create post</a>
+        </nav>
+    </div>
+</div>
+
+<!-- drawer js -->
+<script>
+    (function() {
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const drawer = document.getElementById('mobileDrawer');
+        const closeBtn = document.getElementById('closeDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+
+        function openDrawer() { drawer.classList.remove('hidden'); }
+        function closeDrawer() { drawer.classList.add('hidden'); }
+
+        if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        if (overlay) overlay.addEventListener('click', closeDrawer);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && drawer && !drawer.classList.contains('hidden')) {
+                closeDrawer();
+            }
+        });
+    })();
+</script>
+
+<!-- spacer for mobile bottom nav -->
+<div class="h-20 md:hidden"></div>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>connectly · privacy</title>
+    <!-- Tailwind + Font Awesome + Inter font -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background-color: #0b0e14; }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 1;
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1a1f2b; }
+        ::-webkit-scrollbar-thumb { background: #2f3e5a; border-radius: 20px; }
+        .card-elegant {
+            background: #131a24;
+            border: 1px solid #253141;
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(37, 49, 65, 0.5);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .glass-effect {
+            background: rgba(18, 28, 40, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(45, 85, 255, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(145deg, #2563eb, #1e3fae);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.75rem;
+            border-radius: 40px;
+            transition: all 0.2s;
+            box-shadow: 0 8px 18px -6px #1e3a8a;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(145deg, #2f6ef0, #2549c2);
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px -8px #1e40af;
+        }
+        .btn-secondary {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #b9c7e0;
+            border-radius: 40px;
+            transition: all 0.15s;
+        }
+        .btn-secondary:hover {
+            background: #263445;
+            border-color: #3b4b64;
+            color: white;
+        }
+        .avatar-ring {
+            box-shadow: 0 0 0 2px #1f2a3f, 0 0 0 4px #2563eb30;
+        }
+        .mobile-bottom-nav {
+            background: rgba(15, 23, 36, 0.85);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #253b5c;
+        }
+        .settings-item {
+            transition: all 0.15s;
+        }
+        .settings-item:hover {
+            background: #1e2a3a;
+        }
+        .settings-item-active {
+            background: #1e2f44;
+            border-left: 4px solid #2563eb;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #334155;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #2563eb;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        .select-field {
+            background: #1e293b;
+            border: 1px solid #32455f;
+            border-radius: 40px;
+            padding: 0.5rem 1.5rem 0.5rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .select-field:focus {
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="relative antialiased text-gray-200 selection:bg-blue-800 selection:text-white">
+
+<!-- ========== TOP BAR (identical) ========== -->
+<header class="sticky top-0 z-30 py-3 px-4 md:px-6 glass-effect" style="border-bottom: 1px solid #253b5c;">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <button class="block md:hidden text-blue-400 text-2xl hover:text-blue-300 transition" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent drop-shadow">connectly<span class="text-blue-500">.</span></a>
+        </div>
+        <div class="hidden md:block w-full max-w-md mx-6">
+            <div class="relative group">
+                <i class="fa-solid fa-magnifying-glass absolute left-5 top-3.5 text-blue-400/50 group-focus-within:text-blue-400 transition text-lg"></i>
+                <input type="text" placeholder="Search people, posts, or hashtags..." 
+                       class="w-full bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 pl-14 pr-6 text-sm text-white placeholder:text-blue-300/30 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-600/20 transition">
+            </div>
+        </div>
+        <div class="flex items-center gap-6 text-gray-200">
+            <a href="messages.html" class="hover:text-blue-400 relative hidden sm:block text-xl transition p-2 -m-2 rounded-full hover:bg-blue-600/10">
+                <i class="fa-regular fa-message"></i>
+            </a>
+            <a href="notifications.html" class="hover:text-blue-400 relative text-xl p-2 -m-2 rounded-full hover:bg-blue-600/10 transition">
+                <i class="fa-regular fa-bell"></i>
+                <span class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg">5</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-2 pl-2 border-l border-blue-800/40">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" class="w-10 h-10 rounded-full object-cover avatar-ring">
+                <span class="hidden sm:inline text-sm font-medium text-white/90">Maya</span>
+            </a>
+        </div>
+    </div>
+    <div class="mt-3 md:hidden">
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-5 top-4 text-blue-400/60"></i>
+            <input type="text" placeholder="Search..." class="w-full bg-[#1e293b] border border-[#32455f] rounded-full py-3.5 pl-12 pr-5 text-sm text-white placeholder:text-blue-300/30 focus:ring-2 focus:ring-blue-600/40">
+        </div>
+    </div>
+</header>
+
+<!-- ========== PRIVACY PAGE CONTENT ========== -->
+<div class="max-w-7xl mx-auto px-4 md:px-6 py-8 relative z-10">
+    <!-- header with back to settings -->
+    <div class="flex items-center gap-4 mb-6">
+        <a href="settings.html" class="text-blue-400 hover:text-blue-300 text-2xl transition"><i class="fa-regular fa-arrow-left"></i></a>
+        <h1 class="text-3xl font-bold text-white">Privacy settings</h1>
+    </div>
+
+    <!-- main grid: left sidebar (categories) + right content -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- left sidebar - categories (same as settings) -->
+        <div class="lg:col-span-1">
+            <div class="card-elegant rounded-3xl overflow-hidden sticky top-24">
+                <nav class="divide-y divide-[#253141]">
+                    <a href="settings.html" class="settings-item flex items-center gap-3 px-5 py-4 text-gray-300 hover:text-white">
+                        <i class="fa-regular fa-user w-6 text-blue-400"></i> Account
+                    </a>
+                    <a href="#" class="settings-item flex items-center gap-3 px-5 py-4 text-gray-300 hover:text-white">
+                        <i class="fa-regular fa-bell w-6 text-blue-400"></i> Notifications
+                    </a>
+                    <a href="privacy.html" class="settings-item settings-item-active flex items-center gap-3 px-5 py-4 text-white font-medium">
+                        <i class="fa-regular fa-shield w-6 text-blue-400"></i> Privacy
+                    </a>
+                    <a href="security.html" class="settings-item flex items-center gap-3 px-5 py-4 text-gray-300 hover:text-white">
+                        <i class="fa-regular fa-lock w-6 text-blue-400"></i> Security
+                    </a>
+                    <a href="#" class="settings-item flex items-center gap-3 px-5 py-4 text-gray-300 hover:text-white">
+                        <i class="fa-regular fa-palette w-6 text-blue-400"></i> Appearance
+                    </a>
+                    <a href="#" class="settings-item flex items-center gap-3 px-5 py-4 text-gray-300 hover:text-white">
+                        <i class="fa-regular fa-language w-6 text-blue-400"></i> Language
+                    </a>
+                    <a href="#" class="settings-item flex items-center gap-3 px-5 py-4 text-gray-300 hover:text-white">
+                        <i class="fa-regular fa-circle-info w-6 text-blue-400"></i> Help
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- right content - privacy settings -->
+        <div class="lg:col-span-3">
+            <div class="card-elegant rounded-3xl p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-white mb-6">Privacy controls</h2>
+
+                <!-- audience section -->
+                <div class="border-b border-[#253141] pb-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Who can see your content</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Posts</p>
+                                <p class="text-xs text-blue-300/60">Control who can see your posts</p>
+                            </div>
+                            <select class="select-field">
+                                <option>Public</option>
+                                <option selected>Friends only</option>
+                                <option>Only me</option>
+                                <option>Custom</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Story</p>
+                                <p class="text-xs text-blue-300/60">Control who can see your stories</p>
+                            </div>
+                            <select class="select-field">
+                                <option>Public</option>
+                                <option selected>Friends only</option>
+                                <option>Close friends</option>
+                                <option>Only me</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Profile information</p>
+                                <p class="text-xs text-blue-300/60">Email, phone, etc.</p>
+                            </div>
+                            <select class="select-field">
+                                <option>Public</option>
+                                <option>Friends only</option>
+                                <option selected>Only me</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- interactions section -->
+                <div class="border-b border-[#253141] pb-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Who can interact with you</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Direct messages</p>
+                                <p class="text-xs text-blue-300/60">Who can send you messages</p>
+                            </div>
+                            <select class="select-field">
+                                <option>Everyone</option>
+                                <option selected>Friends only</option>
+                                <option>No one</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Comments on your posts</p>
+                                <p class="text-xs text-blue-300/60">Who can comment</p>
+                            </div>
+                            <select class="select-field">
+                                <option>Everyone</option>
+                                <option selected>Friends only</option>
+                                <option>No one</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Tagging</p>
+                                <p class="text-xs text-blue-300/60">Who can tag you in posts</p>
+                            </div>
+                            <select class="select-field">
+                                <option>Everyone</option>
+                                <option selected>Friends only</option>
+                                <option>No one</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Mentions</p>
+                                <p class="text-xs text-blue-300/60">Who can mention you</p>
+                            </div>
+                            <select class="select-field">
+                                <option>Everyone</option>
+                                <option selected>Friends only</option>
+                                <option>No one</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- discoverability section -->
+                <div class="border-b border-[#253141] pb-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">Discoverability</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Show account in search engines</p>
+                                <p class="text-xs text-blue-300/60">Allow search engines to index your profile</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Suggest your profile to others</p>
+                                <p class="text-xs text-blue-300/60">Based on mutual friends and interests</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-white">Show activity status</p>
+                                <p class="text-xs text-blue-300/60">Let others see when you're active</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- blocked users summary -->
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Blocked users</h3>
+                    <div class="bg-[#1e2a3a] rounded-2xl p-5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400">
+                                    <i class="fa-regular fa-ban"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-white">You haven't blocked anyone</p>
+                                    <p class="text-xs text-blue-300/60">Blocked users will appear here</p>
+                                </div>
+                            </div>
+                            <button class="btn-secondary py-2 px-4 text-sm">Block user</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- save button -->
+                <div class="flex justify-end mt-8">
+                    <button class="btn-primary py-3 px-8 text-base">Save privacy settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MOBILE BOTTOM NAV ========== -->
+<nav class="fixed bottom-0 left-0 right-0 mobile-bottom-nav py-3 px-6 flex justify-around items-center md:hidden z-40 shadow-2xl">
+    <a href="index.html" class="text-gray-400 hover:text-blue-500 text-3xl transition"><i class="fa-solid fa-house"></i></a>
+    <a href="explore.html" class="text-gray-400 hover:text-blue-500 text-3xl"><i class="fa-regular fa-compass"></i></a>
+    <a href="create-post.html" class="bg-blue-600 text-white rounded-full p-4 -mt-8 shadow-xl text-3xl border border-blue-400"><i class="fa-regular fa-plus"></i></a>
+    <a href="notifications.html" class="text-gray-400 hover:text-blue-500 text-3xl relative">
+        <i class="fa-regular fa-bell"></i>
+        <span class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">5</span>
+    </a>
+    <a href="profile.html" class="text-gray-400 hover:text-blue-500 text-3xl"><i class="fa-regular fa-user"></i></a>
+</nav>
+
+<!-- mobile drawer (identical) -->
+<div id="mobileDrawer" class="fixed inset-0 z-50 hidden" aria-modal="true">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" id="drawerOverlay"></div>
+    <div class="fixed left-0 top-0 bottom-0 w-80 bg-[#0e1622] border-r border-blue-900/40 p-7 shadow-2xl overflow-y-auto">
+        <div class="flex items-center justify-between mb-8">
+            <span class="text-3xl font-extrabold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">connectly<span class="text-blue-500">.</span></span>
+            <button id="closeDrawer" class="text-blue-400 text-4xl hover:text-blue-300 transition"><i class="fa-regular fa-xmark"></i></button>
+        </div>
+        <nav class="space-y-3">
+            <a href="index.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-house w-7"></i> Home</a>
+            <a href="explore.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-compass w-7"></i> Explore</a>
+            <a href="trending.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-solid fa-fire-flame-curved w-7"></i> Trending</a>
+            <a href="friends.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user-group w-7"></i> Friends</a>
+            <a href="messages.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-message w-7"></i> Messages</a>
+            <a href="saved-posts.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-bookmark w-7"></i> Saved</a>
+            <div class="border-t border-[#26344b] my-4"></div>
+            <a href="profile.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-user w-7"></i> Profile</a>
+            <a href="settings.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-gear w-7"></i> Settings</a>
+            <a href="create-post.html" class="flex items-center gap-5 p-4 hover:bg-blue-600/10 text-gray-200 rounded-2xl text-lg"><i class="fa-regular fa-plus-circle w-7"></i> Create post</a>
+        </nav>
+    </div>
+</div>
+
+<!-- drawer js -->
+<script>
+    (function() {
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const drawer = document.getElementById('mobileDrawer');
+        const closeBtn = document.getElementById('closeDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+
+        function openDrawer() { drawer.classList.remove('hidden'); }
+        function closeDrawer() { drawer.classList.add('hidden'); }
+
+        if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        if (overlay) overlay.addEventListener('click', closeDrawer);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && drawer && !drawer.classList.contains('hidden')) {
+                closeDrawer();
+            }
+        });
+    })();
+</script>
+
+<!-- spacer for mobile bottom nav -->
+<div class="h-20 md:hidden"></div>
+</body>
+</html>

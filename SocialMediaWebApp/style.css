@@ -1,0 +1,68 @@
+/* style.css - custom overrides for connectly */
+
+/* Import Inter font (already via CDN, but fallback) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #0b0e14;
+  color: #e2e8f0;
+}
+
+/* custom scrollbar (already in each page, but centralized) */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1f2b;
+}
+::-webkit-scrollbar-thumb {
+  background: #2f3e5a;
+  border-radius: 20px;
+}
+
+/* utility classes for black & blue theme (if needed) */
+.bg-deep {
+  background-color: #0b0e14;
+}
+.card-dark {
+  background: #131a24;
+  border: 1px solid #253141;
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+}
+.text-blue-primary {
+  color: #2563eb;
+}
+.btn-blue {
+  background: linear-gradient(145deg, #2563eb, #1e3fae);
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.75rem;
+  border-radius: 40px;
+  transition: all 0.2s;
+  box-shadow: 0 8px 18px -6px #1e3a8a;
+  border: none;
+}
+.btn-blue:hover {
+  background: linear-gradient(145deg, #2f6ef0, #2549c2);
+  transform: scale(1.02);
+  box-shadow: 0 12px 24px -8px #1e40af;
+}
+.btn-outline-blue {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #b9c7e0;
+  border-radius: 40px;
+  transition: all 0.15s;
+}
+.btn-outline-blue:hover {
+  background: #263445;
+  border-color: #3b4b64;
+  color: white;
+}
